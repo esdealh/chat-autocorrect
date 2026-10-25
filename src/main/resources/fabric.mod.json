@@ -3,13 +3,24 @@
   "id": "chat-autocorrect",
   "version": "${version}",
   "name": "Chat Autocorrect",
-  "description": "Capitalizes sentences, fixes common typos and contractions, and adds punctuation to your chat messages before they're sent.",
-  "authors": ["rina"],
+  "description": "Fixes your chat messages before they're sent: capitalization, punctuation, contractions and spelling. Client-side and lightweight.",
+  "authors": [
+    "esdealh"
+  ],
+  "contact": {
+    "sources": "https://github.com/esdealh/chat-autocorrect",
+    "issues": "https://github.com/esdealh/chat-autocorrect/issues"
+  },
   "license": "MIT",
+  "icon": "assets/chat-autocorrect/icon.png",
   "environment": "client",
   "entrypoints": {
-    "client": ["com.rina.chatautocorrect.ChatAutocorrectClient"],
-    "modmenu": ["com.rina.chatautocorrect.ModMenuIntegration"]
+    "client": [
+      "com.rina.chatautocorrect.ChatAutocorrectClient"
+    ],
+    "modmenu": [
+      "com.rina.chatautocorrect.ModMenuIntegration"
+    ]
   },
   "depends": {
     "fabricloader": ">=0.16.0",

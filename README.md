@@ -30,7 +30,7 @@ You need **Java 21** (for example from https://adoptium.net).
    - Windows: `gradlew build`
    - Mac/Linux: `./gradlew build`
 3. The first build downloads Minecraft and Fabric, so it takes a few minutes.
-4. Your mod is `build/libs/chat-autocorrect-1.2.0.jar`.
+4. Your mod is `build/libs/chat-autocorrect-1.2.1.jar`.
 
 **No terminal?** Upload this folder to a GitHub repo. The included GitHub Action builds the jar automatically; download it from the repo's **Actions** tab.
 
@@ -46,3 +46,7 @@ You need **Java 21** (for example from https://adoptium.net).
 - Words the spell checker should know (so it never changes them): add them to `src/main/resources/assets/chat-autocorrect/extra-words.txt`.
 
 Then rebuild.
+
+## Credits
+
+Word frequency list from [SymSpell](https://github.com/wolfgarbe/SymSpell) by Wolf Garbe (MIT license).
