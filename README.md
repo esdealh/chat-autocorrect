@@ -3,11 +3,12 @@
 Fixes your chat messages right before they're sent:
 
 - Capitalizes the start of each sentence: `hey guys` -> `Hey guys.`
-- Fixes `i`, `im`, `dont`, `thats`, `teh`, `alot` and ~60 other common slips
+- Fixes `i`, `im`, `dont`, `thats`, `teh`, `alot` and ~100 other common slips
+- Spell check with a 50,000-word English dictionary plus Minecraft and chat slang: `diaomds` -> `diamonds`, `creaper` -> `creeper`, `obsidain` -> `obsidian`
 - Adds a `.` at the end, or a `?` if it looks like a question (`where is the diamond` -> `Where is the diamond?`)
 - Leaves alone: commands, links, emoticons like `:)` / `xD`, online players' names, and slang like `gg`, `lol`, `brb`
 - Start a message with `\` to send it exactly as typed
-- `/autocorrect on`, `/autocorrect off`, `/autocorrect toggle` (saved between sessions)
+- `/autocorrect on`, `/autocorrect off`, `/autocorrect toggle`, `/autocorrect spelling on|off` (saved between sessions)
 
 Client-side only, so it works on any server.
 
@@ -20,7 +21,7 @@ You need **Java 21** (for example from https://adoptium.net).
    - Windows: `gradlew build`
    - Mac/Linux: `./gradlew build`
 3. The first build downloads Minecraft and Fabric, so it takes a few minutes.
-4. Your mod is `build/libs/chat-autocorrect-1.0.0.jar`.
+4. Your mod is `build/libs/chat-autocorrect-1.1.0.jar`.
 
 **No terminal?** Upload this folder to a GitHub repo. The included GitHub Action builds the jar automatically; download it from the repo's **Actions** tab.
 
@@ -32,4 +33,7 @@ You need **Java 21** (for example from https://adoptium.net).
 
 ## Adding your own word fixes
 
-Edit the `pairs` list in `src/main/java/com/rina/chatautocorrect/AutoCorrect.java` and rebuild.
+- Exact fixes: edit the `pairs` list in `src/main/java/com/rina/chatautocorrect/AutoCorrect.java`.
+- Words the spell checker should know (so it never changes them): add them to `src/main/resources/assets/chat-autocorrect/extra-words.txt`.
+
+Then rebuild.

@@ -1,0 +1,32 @@
+# Words the spell checker should know (Minecraft, gaming, slang).
+# One per line. These are never "corrected" and can be suggested as fixes.
+diamond diamonds netherite redstone creeper creepers enderman endermen ender nether overworld elytra
+obsidian cobblestone cobble deepslate villager villagers pillager pillagers zombie zombies skeleton skeletons
+spider spiders blaze blazes ghast ghasts piglin piglins hoglin hoglins wither warden axolotl axolotls strider
+shulker shulkers totem totems enchant enchanting enchanted enchantment enchantments anvil smithing furnace crafting
+bedrock lapis emerald emeralds ingot ingots nugget nuggets mineshaft stronghold portal portals biome biomes
+minecart minecarts hopper hoppers dispenser dropper observer piston pistons repeater comparator beacon conduit
+trident crossbow netherrack glowstone quartz prismarine terracotta concrete wool spruce birch oak acacia mangrove
+jungle taiga tundra mesa badlands mooshroom ocelot llama parrot cod salmon pufferfish guardian evoker vindicator
+ravager vex phantom phantoms drowned husk stray slime slimes magma silverfish endermite allay sniffer camel
+armadillo breeze spawn respawn spawner spawners coords mending unbreaking efficiency fortune silk looting
+sharpness smite protection thorns riptide loyalty channeling infinity mod mods modded modpack server servers
+realm realms bedwars skywars skyblock smp faction factions kit kits minecraft mojang herobrine enderchest
+cobweb kelp bamboo scaffolding lantern campfire sculk amethyst copper debris dripstone azalea cave caves ravine
+chunk chunks seed seeds render fps lag laggy ping grinder farm farms autofarm mob mobs trading pickaxe pickaxes
+axe shovel hoe sword swords bow arrows shield helmet chestplate leggings boots armor armour iron gold coal
+torch torches chest chests bed beds crafting workbench sapling saplings wheat carrots potatoes beetroot melon
+pumpkin sugarcane cactus netherwart potion potions brewing splash lingering creative survival hardcore spectator
+adventure multiplayer singleplayer hotbar inventory durability xp lvl lvls griefer griefing grief raid raids
+build builds builder base bases tp tpa sethome warp warps lobby pvp pve noob noobs op nerf nerfed buff buffed
+# slang and chat words
+bruh ngl fr ong sus lowkey highkey gonna wanna gotta kinda sorta yeah yep yup nope nah ya yall okay ok lol lmao
+lmfao rofl omg idk tbh imo btw brb afk gg ggs wp irl dm dms pls plz thx ty np yw rn cuz bc hmm hmmm ugh uh um
+oof yay haha hahaha xd ez gl hf glhf smh wyd hbu wbu ikr ily istg oml bet vibe vibes pog poggers yo sup hiya
+heya bro bros dude dudes lil ima finna tryna aight alr wdym mb ofc tho thru gud fam rip w l ratio
+yeet yeeted sheesh hehe heh ight imma rizz tryhard tryhards sweaty afking griefers hypixel kekw lemme gimme dunno
+oki okie okey okk kk welp yikes bestie ayo ayoo deadass ong nvm nm ty tysm ilysm ggwp speedrun speedrunner
+speedrunning noclip bedwars hacker hackers hacking cheater cheaters xray autoclicker lagging lagged
+mewing goated bussin periodt smth sth prolly gotchu whatcha wassup mins secs rawr kawaii senpai uwu owo nya
+skibidi gyatt fanum rizzler sigma slay based cringe simp boi cya ttyl gtg sry srry jk fyi asap ppl pfp
+discord twitch youtube tiktok enderpearl pearl spawnpoint

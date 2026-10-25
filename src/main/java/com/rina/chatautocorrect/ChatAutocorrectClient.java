@@ -11,6 +11,7 @@ import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -24,6 +25,8 @@ public class ChatAutocorrectClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         Config.load();
+        AutoCorrect.spellCheck = Config.spellCheck;
+        loadDictionary();
 
         ClientSendMessageEvents.MODIFY_CHAT.register(message -> {
             if (message.startsWith(RAW_PREFIX) && message.length() > 1) return message.substring(1);
@@ -40,7 +43,26 @@ public class ChatAutocorrectClient implements ClientModInitializer {
                         .executes(ctx -> status(ctx.getSource()))
                         .then(literal("on").executes(ctx -> set(ctx.getSource(), true)))
                         .then(literal("off").executes(ctx -> set(ctx.getSource(), false)))
-                        .then(literal("toggle").executes(ctx -> set(ctx.getSource(), !Config.enabled)))));
+                        .then(literal("toggle").executes(ctx -> set(ctx.getSource(), !Config.enabled)))
+                        .then(literal("spelling")
+                                .then(literal("on").executes(ctx -> setSpelling(ctx.getSource(), true)))
+                                .then(literal("off").executes(ctx -> setSpelling(ctx.getSource(), false))))));
+    }
+
+    private static void loadDictionary() {
+        try (InputStream words = ChatAutocorrectClient.class.getResourceAsStream("/assets/chat-autocorrect/words.txt");
+             InputStream extra = ChatAutocorrectClient.class.getResourceAsStream("/assets/chat-autocorrect/extra-words.txt")) {
+            if (words != null) SpellCheck.load(words, extra);
+        } catch (Exception e) {
+            // spell check just stays off; the rest of the mod still works
+        }
+    }
+
+    private static int setSpelling(FabricClientCommandSource source, boolean value) {
+        Config.spellCheck = value;
+        AutoCorrect.spellCheck = value;
+        Config.save();
+        return status(source);
     }
 
     private static int set(FabricClientCommandSource source, boolean value) {
@@ -51,11 +73,15 @@ public class ChatAutocorrectClient implements ClientModInitializer {
 
     private static int status(FabricClientCommandSource source) {
         source.sendFeedback(Text.literal("Chat Autocorrect is ")
-                .append(Config.enabled
-                        ? Text.literal("ON").formatted(Formatting.GREEN)
-                        : Text.literal("OFF").formatted(Formatting.RED))
+                .append(onOff(Config.enabled))
+                .append(Text.literal(", spell check is "))
+                .append(onOff(Config.spellCheck && SpellCheck.isLoaded()))
                 .append(Text.literal(". Start a message with \\ to skip it once.").formatted(Formatting.GRAY)));
         return Command.SINGLE_SUCCESS;
+    }
+
+    private static Text onOff(boolean on) {
+        return on ? Text.literal("ON").formatted(Formatting.GREEN) : Text.literal("OFF").formatted(Formatting.RED);
     }
 
     private static Set<String> onlinePlayerNames() {

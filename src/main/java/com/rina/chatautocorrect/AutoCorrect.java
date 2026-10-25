@@ -13,6 +13,9 @@ import java.util.regex.Pattern;
 public final class AutoCorrect {
     private AutoCorrect() {}
 
+    /** Use the dictionary spell checker for words not in the fix list. */
+    public static boolean spellCheck = true;
+
     /** Vanilla chat limit. If a fix would go over it, the original message is sent. */
     public static final int MAX_LENGTH = 256;
 
@@ -22,7 +25,7 @@ public final class AutoCorrect {
     /** Words that end a message without needing a period. */
     private static final Set<String> NO_PERIOD_WORDS = Set.of(
             "lol", "lmao", "lmfao", "rofl", "xd", "gg", "ggs", "gl", "glhf", "brb", "afk",
-            "ty", "thx", "np", "omg", "ok", "k", "kk", "yw", "idk", "imo", "tbh", "btw", "rn", "pls", "plz");
+            "ty", "thx", "np", "omg", "ok", "k", "kk", "yw", "idk", "imo", "tbh", "btw", "rn", "pls", "plz", "ez", "fr", "ngl", "bruh", "xdd", "wp", "ggwp");
 
     private static final Set<String> QUESTION_STARTERS = Set.of(
             "who", "what", "when", "where", "why", "how", "which", "whose", "whom",
@@ -53,6 +56,14 @@ public final class AutoCorrect {
                 {"wich", "which"}, {"occured", "occurred"}, {"truely", "truly"}, {"basicly", "basically"},
                 {"realy", "really"}, {"finaly", "finally"}, {"knwo", "know"}, {"waht", "what"},
                 {"taht", "that"}, {"jsut", "just"}, {"hte", "the"}, {"thnaks", "thanks"},
+                // common chat misspellings the spell checker would guess wrong
+                {"helo", "hello"}, {"wher", "where"}, {"giv", "give"}, {"hav", "have"}, {"wanst", "wasn't"}, {"probly", "probably"}, {"probaly", "probably"}, {"thas", "that's"},
+                {"becuz", "because"}, {"becus", "because"}, {"bcuz", "because"}, {"unfur", "unfair"},
+                {"dis", "this"}, {"wat", "what"}, {"wut", "what"}, {"pls", "pls"}, {"ofc", "ofc"},
+                {"didnt", "didn't"}, {"idk", "idk"}, {"ya'll", "y'all"}, {"yall", "y'all"},
+                {"lets", "let's"}, {"hes", "he's"}, {"shes", "she's"}, {"wouldve", "would've"},
+                {"couldve", "could've"}, {"shouldve", "should've"}, {"wheres", "where's"}, {"whos", "who's"},
+                {"hows", "how's"}, {"heres", "here's"}, {"everytime", "every time"}, {"noone", "no one"},
         };
         for (String[] p : pairs) WORDS.put(p[0], p[1]);
     }
@@ -95,6 +106,9 @@ public final class AutoCorrect {
 
             if (!core.isEmpty() && !isName) {
                 String fix = WORDS.get(lower);
+                // Capitalized mid-sentence = probably a name ("ask Bob"), so don't spell check it
+                boolean looksLikeName = !capNext && Character.isUpperCase(core.charAt(0)) && !core.equals(core.toUpperCase(Locale.ROOT));
+                if (fix == null && spellCheck && !looksLikeName) fix = SpellCheck.suggest(lower);
                 if (fix != null) core = matchCase(core, fix);
                 if (capNext && !NO_PERIOD_WORDS.contains(lower)) core = capitalize(core);
             }
