@@ -8,12 +8,16 @@
   "license": "MIT",
   "environment": "client",
   "entrypoints": {
-    "client": ["com.rina.chatautocorrect.ChatAutocorrectClient"]
+    "client": ["com.rina.chatautocorrect.ChatAutocorrectClient"],
+    "modmenu": ["com.rina.chatautocorrect.ModMenuIntegration"]
   },
   "depends": {
     "fabricloader": ">=0.16.0",
     "minecraft": ">=1.21 <=1.21.1",
     "java": ">=21",
     "fabric-api": "*"
+  },
+  "suggests": {
+    "modmenu": "*"
   }
 }

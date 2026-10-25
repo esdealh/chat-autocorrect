@@ -1,6 +1,7 @@
 package com.rina.chatautocorrect;
 
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -16,6 +17,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 
 public class ChatAutocorrectClient implements ClientModInitializer {
@@ -25,7 +27,6 @@ public class ChatAutocorrectClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         Config.load();
-        AutoCorrect.spellCheck = Config.spellCheck;
         loadDictionary();
 
         ClientSendMessageEvents.MODIFY_CHAT.register(message -> {
@@ -46,7 +47,34 @@ public class ChatAutocorrectClient implements ClientModInitializer {
                         .then(literal("toggle").executes(ctx -> set(ctx.getSource(), !Config.enabled)))
                         .then(literal("spelling")
                                 .then(literal("on").executes(ctx -> setSpelling(ctx.getSource(), true)))
-                                .then(literal("off").executes(ctx -> setSpelling(ctx.getSource(), false))))));
+                                .then(literal("off").executes(ctx -> setSpelling(ctx.getSource(), false))))
+                        // /autocorrect add gn good night
+                        .then(literal("add").then(argument("wrong", StringArgumentType.word())
+                                .then(argument("right", StringArgumentType.greedyString()).executes(ctx -> {
+                                    String wrong = StringArgumentType.getString(ctx, "wrong").toLowerCase(Locale.ROOT);
+                                    String right = StringArgumentType.getString(ctx, "right").strip();
+                                    Config.fixes.put(wrong, right);
+                                    return saved(ctx.getSource(), "Will now change \"" + wrong + "\" to \"" + right + "\".");
+                                }))))
+                        // /autocorrect remove gn
+                        .then(literal("remove").then(argument("word", StringArgumentType.word()).executes(ctx -> {
+                            String w = StringArgumentType.getString(ctx, "word").toLowerCase(Locale.ROOT);
+                            boolean removed = Config.fixes.remove(w) != null | Config.neverChange.remove(w);
+                            return saved(ctx.getSource(), removed ? "Removed \"" + w + "\"." : "\"" + w + "\" wasn't in your lists.");
+                        })))
+                        // /autocorrect ignore esdealh
+                        .then(literal("ignore").then(argument("word", StringArgumentType.word()).executes(ctx -> {
+                            String w = StringArgumentType.getString(ctx, "word").toLowerCase(Locale.ROOT);
+                            Config.neverChange.add(w);
+                            return saved(ctx.getSource(), "Will never change \"" + w + "\".");
+                        })))));
+    }
+
+    private static int saved(FabricClientCommandSource source, String message) {
+        Config.apply();
+        Config.save();
+        source.sendFeedback(Text.literal(message).formatted(Formatting.GREEN));
+        return Command.SINGLE_SUCCESS;
     }
 
     private static void loadDictionary() {
@@ -60,7 +88,7 @@ public class ChatAutocorrectClient implements ClientModInitializer {
 
     private static int setSpelling(FabricClientCommandSource source, boolean value) {
         Config.spellCheck = value;
-        AutoCorrect.spellCheck = value;
+        Config.apply();
         Config.save();
         return status(source);
     }
@@ -76,7 +104,7 @@ public class ChatAutocorrectClient implements ClientModInitializer {
                 .append(onOff(Config.enabled))
                 .append(Text.literal(", spell check is "))
                 .append(onOff(Config.spellCheck && SpellCheck.isLoaded()))
-                .append(Text.literal(". Start a message with \\ to skip it once.").formatted(Formatting.GRAY)));
+                .append(Text.literal(". Start a message with \\ to skip it once. Add words with /autocorrect add or ignore.").formatted(Formatting.GRAY)));
         return Command.SINGLE_SUCCESS;
     }
 

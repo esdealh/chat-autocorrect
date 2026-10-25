@@ -13,6 +13,11 @@ import java.util.regex.Pattern;
 public final class AutoCorrect {
     private AutoCorrect() {}
 
+    /** The player's own fixes (lowercase typo -> fix). Checked before everything else. */
+    public static volatile Map<String, String> customFixes = Map.of();
+    /** Words the player never wants changed (lowercase). Treated like player names. */
+    public static volatile Set<String> neverChange = Set.of();
+
     /** Use the dictionary spell checker for words not in the fix list. */
     public static boolean spellCheck = true;
 
@@ -102,15 +107,16 @@ public final class AutoCorrect {
 
             String prefix = m.group(1), core = m.group(2), suffix = m.group(3);
             String lower = core.toLowerCase(Locale.ROOT);
-            boolean isName = playerNames.contains(lower);
+            boolean isName = playerNames.contains(lower) || neverChange.contains(lower);
 
             if (!core.isEmpty() && !isName) {
-                String fix = WORDS.get(lower);
+                String fix = customFixes.get(lower);
+                if (fix == null) fix = WORDS.get(lower);
                 // Capitalized mid-sentence = probably a name ("ask Bob"), so don't spell check it
                 boolean looksLikeName = !capNext && Character.isUpperCase(core.charAt(0)) && !core.equals(core.toUpperCase(Locale.ROOT));
                 if (fix == null && spellCheck && !looksLikeName) fix = SpellCheck.suggest(lower);
                 if (fix != null) core = matchCase(core, fix);
-                if (capNext && !NO_PERIOD_WORDS.contains(lower)) core = capitalize(core);
+                if (capNext && !NO_PERIOD_WORDS.contains(core.toLowerCase(Locale.ROOT))) core = capitalize(core);
             }
 
             tokens[i] = prefix + core + suffix;
@@ -127,7 +133,7 @@ public final class AutoCorrect {
                 && (Character.isLetterOrDigit(end) || end == '\'' || end == '’')
                 && !isUrl(last) && !isEmote(last)
                 && !NO_PERIOD_WORDS.contains(lastLower)
-                && !playerNames.contains(lastLower)) {
+                && !playerNames.contains(lastLower) && !neverChange.contains(lastLower)) {
             out += isQuestion(lastSentence(tokens)) ? "?" : ".";
         }
 

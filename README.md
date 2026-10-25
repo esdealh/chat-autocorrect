@@ -12,6 +12,15 @@ Fixes your chat messages right before they're sent:
 
 Client-side only, so it works on any server.
 
+## Your own words
+
+- **Mod Menu** (optional): Mods → Chat Autocorrect → **Configure**. Turn things on/off, add your own fixes (`gn = good night`, one per line) and words it should never change (nicknames, slang).
+- **Commands**:
+  - `/autocorrect add gn good night` - always change "gn" to "good night"
+  - `/autocorrect ignore esdealh` - never change this word
+  - `/autocorrect remove gn` - take a word off your lists
+- Or edit `config/chat-autocorrect/fixes.txt` and `never-change.txt` in your .minecraft folder.
+
 ## Build the .jar
 
 You need **Java 21** (for example from https://adoptium.net).
@@ -21,7 +30,7 @@ You need **Java 21** (for example from https://adoptium.net).
    - Windows: `gradlew build`
    - Mac/Linux: `./gradlew build`
 3. The first build downloads Minecraft and Fabric, so it takes a few minutes.
-4. Your mod is `build/libs/chat-autocorrect-1.1.0.jar`.
+4. Your mod is `build/libs/chat-autocorrect-1.2.0.jar`.
 
 **No terminal?** Upload this folder to a GitHub repo. The included GitHub Action builds the jar automatically; download it from the repo's **Actions** tab.
 
