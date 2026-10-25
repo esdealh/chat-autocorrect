@@ -4,6 +4,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.EditBoxWidget;
+import com.rina.chatautocorrect.compat.Compat;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -17,7 +18,7 @@ public class ConfigScreen extends Screen {
 
     private EditBoxWidget fixesBox;
     private EditBoxWidget neverChangeBox;
-    // Keep what was typed if the window is resized (init() runs again)
+    // Keep what was typed if the window is resized (init() runs again and rebuilds the boxes)
     private String fixesText = WordLists.fixesToText(Config.fixes);
     private String neverChangeText = WordLists.wordsToText(Config.neverChange);
 
@@ -50,16 +51,18 @@ public class ConfigScreen extends Screen {
         }).dimensions(right, TOP, colWidth, 20).build());
 
         // Word lists
-        fixesBox = new EditBoxWidget(this.textRenderer, left, BOX_Y, colWidth, boxHeight,
+        fixesBox = Compat.editBox(this.textRenderer, left, BOX_Y, colWidth, boxHeight,
                 Text.literal("e.g.  gn = good night"), Text.literal("My fixes"));
         fixesBox.setMaxLength(20000);
         fixesBox.setText(fixesText);
+        fixesBox.setChangeListener(t -> fixesText = t);
         addDrawableChild(fixesBox);
 
-        neverChangeBox = new EditBoxWidget(this.textRenderer, right, BOX_Y, colWidth, boxHeight,
+        neverChangeBox = Compat.editBox(this.textRenderer, right, BOX_Y, colWidth, boxHeight,
                 Text.literal("e.g.  your nickname"), Text.literal("Never change"));
         neverChangeBox.setMaxLength(20000);
         neverChangeBox.setText(neverChangeText);
+        neverChangeBox.setChangeListener(t -> neverChangeText = t);
         addDrawableChild(neverChangeBox);
 
         // Save / cancel
@@ -70,18 +73,11 @@ public class ConfigScreen extends Screen {
                 .dimensions(this.width / 2 + 4, buttonsY, 150, 20).build());
     }
 
-    @Override
-    public void resize(net.minecraft.client.MinecraftClient client, int width, int height) {
-        if (fixesBox != null) fixesText = fixesBox.getText();
-        if (neverChangeBox != null) neverChangeText = neverChangeBox.getText();
-        super.resize(client, width, height);
-    }
-
     private void saveAndClose() {
         Config.enabled = enabled;
         Config.spellCheck = spellCheck;
-        Config.fixes = WordLists.parseFixes(fixesBox.getText());
-        Config.neverChange = WordLists.parseWords(neverChangeBox.getText());
+        Config.fixes = WordLists.parseFixes(fixesText);
+        Config.neverChange = WordLists.parseWords(neverChangeText);
         Config.apply();
         Config.save();
         close();
@@ -95,16 +91,16 @@ public class ConfigScreen extends Screen {
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
-        context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 12, 0xFFFFFF);
+        context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 12, 0xFFFFFFFF); // ARGB: newer versions need the alpha byte
 
         int gap = 10;
         int colWidth = Math.min(220, (this.width - 3 * gap) / 2);
         int left = this.width / 2 - colWidth - gap / 2;
         int right = this.width / 2 + gap / 2;
         context.drawTextWithShadow(this.textRenderer, Text.literal("My fixes ").append(
-                Text.literal("(wrong = right)").formatted(Formatting.GRAY)), left, LABEL_Y, 0xFFFFFF);
+                Text.literal("(wrong = right)").formatted(Formatting.GRAY)), left, LABEL_Y, 0xFFFFFFFF); // ARGB: newer versions need the alpha byte
         context.drawTextWithShadow(this.textRenderer, Text.literal("Never change ").append(
-                Text.literal("(one per line)").formatted(Formatting.GRAY)), right, LABEL_Y, 0xFFFFFF);
+                Text.literal("(one per line)").formatted(Formatting.GRAY)), right, LABEL_Y, 0xFFFFFFFF); // ARGB: newer versions need the alpha byte
     }
 
     private static Text toggleText(String name, boolean on) {

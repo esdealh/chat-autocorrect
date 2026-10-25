@@ -1,4 +1,4 @@
-# Chat Autocorrect (Fabric, Minecraft 1.21.1)
+# Chat Autocorrect (Fabric, Minecraft 1.21 - 1.21.11)
 
 Fixes your chat messages right before they're sent:
 
@@ -23,21 +23,25 @@ Client-side only, so it works on any server.
 
 ## Build the .jar
 
-You need **Java 21** (for example from https://adoptium.net).
+Each group of Minecraft versions gets its own jar. The settings for each are in `versions/`:
 
-1. Unzip this folder and open a terminal inside it.
-2. Run:
-   - Windows: `gradlew build`
-   - Mac/Linux: `./gradlew build`
-3. The first build downloads Minecraft and Fabric, so it takes a few minutes.
-4. Your mod is `build/libs/chat-autocorrect-1.2.1.jar`.
+| Build target | Works on |
+|---|---|
+| `1.21.1` | 1.21 - 1.21.1 |
+| `1.21.3` | 1.21.2 - 1.21.3 |
+| `1.21.4` | 1.21.4 |
+| `1.21.5` | 1.21.5 |
+| `1.21.8` | 1.21.6 - 1.21.8 |
+| `1.21.10` | 1.21.9 - 1.21.10 |
+| `1.21.11` | 1.21.11 |
 
-**No terminal?** Upload this folder to a GitHub repo. The included GitHub Action builds the jar automatically; download it from the repo's **Actions** tab.
+- **On GitHub:** every push builds all of them. Download them from the **Actions** tab.
+- **On your computer** (Java 21): `gradlew build -Ptarget=1.21.11`. The jar is in `build/libs/`.
 
 ## Install
 
-1. Install **Fabric Loader** for 1.21.1 (https://fabricmc.net/use/installer/).
-2. Put the jar **and** **Fabric API** (https://modrinth.com/mod/fabric-api, 1.21.1 version) in your `.minecraft/mods` folder.
+1. Install **Fabric Loader** for your Minecraft version (https://fabricmc.net/use/installer/).
+2. Put the jar **and** **Fabric API** (https://modrinth.com/mod/fabric-api, version matching your Minecraft) in your `.minecraft/mods` folder.
 3. Launch the Fabric profile.
 
 ## Adding your own word fixes

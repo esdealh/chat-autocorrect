@@ -1,8 +1,15 @@
 plugins {
-    id 'fabric-loom' version '1.10-SNAPSHOT'
+    id 'fabric-loom' version '1.13.3'
 }
 
-version = project.mod_version
+// Which Minecraft version to build for: ./gradlew build -Ptarget=1.21.11
+// Each target has a file in versions/ with its Minecraft, mappings and Fabric API versions.
+def target = project.findProperty('target') ?: '1.21.11'
+def targetProps = new Properties()
+file("versions/${target}.properties").withInputStream { targetProps.load(it) }
+def v = { String key -> targetProps.getProperty(key) }
+
+version = "${project.mod_version}+mc${target}"
 group = project.maven_group
 
 base {
@@ -17,19 +24,30 @@ repositories {
     }
 }
 
+// Shared code plus the small version-specific Compat class
+sourceSets {
+    main {
+        java {
+            srcDir "src/compat/${v('compat')}/java"
+        }
+    }
+}
+
 dependencies {
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    minecraft "com.mojang:minecraft:${v('minecraft_version')}"
+    mappings "net.fabricmc:yarn:${v('yarn_mappings')}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    // compile against Mod Menu, but don't require it at runtime
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${v('fabric_version')}"
+    // Compile against Mod Menu's API without requiring it at runtime.
+    // Its API (ModMenuApi / ConfigScreenFactory) is the same in every 1.21.x version.
     modCompileOnly("com.terraformersmc:modmenu:${project.modmenu_version}") { transitive = false }
 }
 
 processResources {
-    inputs.property "version", project.version
+    def props = [version: project.version, mc_range: v('mc_range')]
+    inputs.properties props
     filesMatching("fabric.mod.json") {
-        expand "version": project.version
+        expand props
     }
 }
 

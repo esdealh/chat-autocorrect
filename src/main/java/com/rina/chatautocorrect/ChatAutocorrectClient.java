@@ -2,6 +2,7 @@ package com.rina.chatautocorrect;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.rina.chatautocorrect.compat.Compat;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -117,7 +118,8 @@ public class ChatAutocorrectClient implements ClientModInitializer {
         ClientPlayNetworkHandler handler = MinecraftClient.getInstance().getNetworkHandler();
         if (handler == null) return names;
         for (PlayerListEntry entry : handler.getPlayerList()) {
-            names.add(entry.getProfile().getName().toLowerCase(Locale.ROOT));
+            String name = Compat.profileName(entry.getProfile());
+            if (name != null) names.add(name.toLowerCase(Locale.ROOT));
         }
         return names;
     }
