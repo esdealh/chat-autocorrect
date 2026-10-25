@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "chat-autocorrect",
+  "version": "${version}",
+  "name": "Chat Autocorrect",
+  "description": "Capitalizes sentences, fixes common typos and contractions, and adds punctuation to your chat messages before they're sent.",
+  "authors": ["rina"],
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "client": ["com.rina.chatautocorrect.ChatAutocorrectClient"]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": ">=1.21 <=1.21.1",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
